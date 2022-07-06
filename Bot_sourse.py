@@ -9,11 +9,17 @@ updater = Updater(token='5578165526:AAFAePrUyZ1bgy5gH0KqdJHIaDjZzc4MDzg')
 dispatcher = updater.dispatcher
 
 
-
 def start(update, context):
     global area
     area = [["*", "*", "*"], ["*", "*", "*"], ["*", "*", "*"]]
+    global turn
+    turn = 1
     context.bot.send_message(update.effective_chat.id, "Начало новой игры в крестики-нолики!")
+    context.bot.send_message(update.effective_chat.id, "На игровом поле 3 строки и 3 столбца")
+    for cell in area:
+        context.bot.send_message(update.effective_chat.id, cell)
+    context.bot.send_message(update.effective_chat.id, "Первые ходят крестики")
+    context.bot.send_message(update.effective_chat.id, "По очереди вводите свои ходы в формате *номер строки*,*номер колонны*")
 
 
 def info(update, context):
@@ -31,37 +37,37 @@ def check_winner(field):
     return False            
 
 def message(update, context):
+    global turn
     global area
-    for turn in range(1, 10):
+    if turn > 9:
+        context.bot.send_message(update.effective_chat.id,"Игра окончена")
+    else:
         context.bot.send_message(update.effective_chat.id,f"Ход: {turn}")
         if turn % 2 == 0:
             turn_char = "0"
-            context.bot.send_message(update.effective_chat.id,'Ходят нолики')
         else:
             turn_char = "X"
-            context.bot.send_message(update.effective_chat.id,'Ходят крестики')
-        context.bot.send_message(update.effective_chat.id, 'Введите номер строки(0,1 или 2):')
         text = update.message.text
-        row = int(text)
-        context.bot.send_message(update.effective_chat.id, 'Введите номер столбца(0,1 или 2):')
-        text = update.message.text
-        column = int(text)
+        text = text.split(',')
+        row = int(text[0]) - 1
+        column = int(text[1]) - 1
         if area[row][column] == "*":
             area[row][column] = turn_char
         else:
             context.bot.send_message(update.effective_chat.id,"Ячейка уже занята, вы пропускаете ход")
         if turn == 9:
             context.bot.send_message(update.effective_chat.id,'Ничья!')
-            continue
+       
         for cell in area:
             context.bot.send_message(update.effective_chat.id, cell)
         
         if check_winner(area) and turn % 2 == 1: 
             context.bot.send_message(update.effective_chat.id,"Победа крестиков!")
-            break
+            
         if check_winner(area) and turn % 2 == 0: 
             context.bot.send_message(update.effective_chat.id,"Победа ноликов!")
-            break
+        turn += 1    
+    
 
 
 
