@@ -2,10 +2,11 @@ from cgitb import text
 from sunau import Au_read
 from telegram import Update, Bot
 from telegram.ext import Updater, CommandHandler, Filters, MessageHandler
+from TOKEN import token_id
 
 
-bot = Bot(token="5578165526:AAFAePrUyZ1bgy5gH0KqdJHIaDjZzc4MDzg")
-updater = Updater(token='5578165526:AAFAePrUyZ1bgy5gH0KqdJHIaDjZzc4MDzg')
+bot = Bot(token=token_id)
+updater = Updater(token=token_id)
 dispatcher = updater.dispatcher
 
 
